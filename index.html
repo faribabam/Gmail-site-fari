@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>fari gmail site</title>
+
+https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;800&display=swap
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Vazirmatn',sans-serif;
+}
+
+:root{
+    --purple:#8b5cf6;
+    --purple2:#c084fc;
+    --dark:#09090f;
+    --glass:rgba(255,255,255,.08);
+}
+
+body{
+    min-height:100vh;
+    overflow-x:hidden;
+    background:
+    radial-gradient(circle at top left,#7c3aed33,transparent 40%),
+    radial-gradient(circle at bottom right,#9333ea33,transparent 40%),
+    linear-gradient(135deg,#06060c,#0e0e18,#12121f);
+    color:white;
+}
+
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:
+    linear-gradient(90deg,transparent 98%,rgba(255,255,255,.03) 100%),
+    linear-gradient(180deg,transparent 98%,rgba(255,255,255,.03) 100%);
+    background-size:40px 40px;
+    pointer-events:none;
+}
+
+.app{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+}
+
+.page{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:30px;
+    transition:.7s ease;
+}
+
+.hidden{
+    opacity:0;
+    visibility:hidden;
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    transform:scale(.96);
+}
+
+.welcome-box{
+    text-align:center;
+    max-width:700px;
+    animation:float 4s ease-in-out infinite;
+}
+
+.welcome-box h1{
+    font-size:clamp(1.8rem,4vw,3rem);
+    line-height:1.9;
+    margin-bottom:35px;
+    text-shadow:0 0 25px #a855f7;
+}
+
+.main-btn{
+    border:none;
+    cursor:pointer;
+    color:white;
+    font-size:1.2rem;
+    font-weight:700;
+    padding:18px 38px;
+    border-radius:18px;
+    background:linear-gradient(135deg,#7c3aed,#c026d3);
+    box-shadow:
+    0 0 15px #9333ea,
+    0 0 35px #9333ea;
+    transition:.35s;
+}
+
+.main-btn:hover{
+    transform:translateY(-4px) scale(1.05);
+    box-shadow:
+    0 0 25px #a855f7,
+    0 0 50px #a855f7;
+}
+
+.card{
+    width:100%;
+    max-width:750px;
+    background:var(--glass);
+    border:1px solid rgba(255,255,255,.12);
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+    border-radius:28px;
+    padding:35px;
+    box-shadow:
+    0 0 20px rgba(168,85,247,.25),
+    0 0 65px rgba(168,85,247,.18);
+    animation:fadeUp .8s ease;
+}
+
+.title{
+    margin-bottom:12px;
+    font-size:1.15rem;
+    font-weight:700;
+    color:#ddd6fe;
+}
+
+.display-box{
+    position:relative;
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:18px;
+    padding:18px;
+    margin-bottom:25px;
+    word-break:break-word;
+    overflow-wrap:anywhere;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+}
+
+.email-value{
+    flex:1;
+}
+
+.actions{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.icon-btn{
+    width:46px;
+    height:46px;
+    border:none;
+    border-radius:14px;
+    cursor:pointer;
+    color:white;
+    font-size:1.1rem;
+    background:linear-gradient(135deg,#6d28d9,#9333ea);
+    transition:.3s;
+}
+
+.icon-btn:hover{
+    transform:scale(1.08);
+}
+
+.password-content{
+    flex:1;
+    color:#d8b4fe;
+}
+
+.modal-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.68);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    opacity:0;
+    visibility:hidden;
+    transition:.35s;
+    z-index:999;
+    padding:20px;
+}
+
+.modal-overlay.active{
+    opacity:1;
+    visibility:visible;
+}
+
+.modal{
+    width:100%;
+    max-width:450px;
+    padding:28px;
+    border-radius:24px;
+    background:rgba(15,15,25,.95);
+    border:1px solid rgba(255,255,255,.1);
+    text-align:center;
+    animation:pop .35s ease;
+}
+
+.modal h3{
+    margin-bottom:25px;
+    font-size:1.3rem;
+}
+
+.modal-buttons{
+    display:flex;
+    gap:12px;
+    justify-content:center;
+    flex-wrap:wrap;
+}
+
+.yes-btn,
+.no-btn{
+    border:none;
+    color:white;
+    cursor:pointer;
+    font-weight:700;
+    padding:14px 22px;
+    border-radius:16px;
+    transition:.3s;
+}
+
+.yes-btn{
+    background:#10b981;
+    box-shadow:0 0 18px #10b981;
+}
+
+.no-btn{
+    background:#ef4444;
+    box-shadow:0 0 18px #ef4444;
+}
+
+.yes-btn:hover,
+.no-btn:hover{
+    transform:translateY(-2px) scale(1.03);
+}
+
+.joke-message{
+    display:none;
+    margin-top:15px;
+    background:rgba(168,85,247,.12);
+    border:1px solid rgba(168,85,247,.35);
+    padding:18px;
+    border-radius:18px;
+    line-height:2;
+}
+
+.show-joke{
+    display:block;
+    animation:bounceFade .8s ease;
+}
+
+.footer{
+    text-align:center;
+    padding:18px;
+    color:#dadada;
+    font-size:.95rem;
+}
+
+.footer .fari{
+    font-style:italic;
+    color:#c084fc;
+    font-weight:800;
+    text-shadow:0 0 15px #c084fc;
+}
+
+.copied{
+    position:fixed;
+    top:20px;
+    left:50%;
+    transform:translateX(-50%);
+    background:#10b981;
+    color:white;
+    padding:12px 20px;
+    border-radius:12px;
+    z-index:9999;
+    animation:toast 2s forwards;
+}
+
+@keyframes fadeUp{
+    from{
+        opacity:0;
+        transform:translateY(35px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+@keyframes float{
+    0%,100%{
+        transform:translateY(0);
+    }
+    50%{
+        transform:translateY(-12px);
+    }
+}
+
+@keyframes pop{
+    from{
+        opacity:0;
+        transform:scale(.8);
+    }
+    to{
+        opacity:1;
+        transform:scale(1);
+    }
+}
+
+@keyframes bounceFade{
+    0%{
+        opacity:0;
+        transform:translateY(30px) scale(.8);
+    }
+    60%{
+        opacity:1;
+        transform:translateY(-10px) scale(1.05);
+    }
+    100%{
+        transform:translateY(0) scale(1);
+    }
+}
+
+@keyframes toast{
+    0%{
+        opacity:0;
+        transform:translate(-50%,-15px);
+    }
+    20%{
+        opacity:1;
+        transform:translate(-50%,0);
+    }
+    80%{
+        opacity:1;
+    }
+    100%{
+        opacity:0;
+    }
+}
+
+@media(max-width:768px){
+
+    .card{
+        padding:25px;
+    }
+
+    .display-box{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .actions{
+        justify-content:flex-start;
+    }
+
+    .modal-buttons{
+        flex-direction:column;
+    }
+
+    .yes-btn,
+    .no-btn{
+        width:100%;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+    <!-- PAGE 1 -->
+    <section class="page" id="welcomePage">
+        <div class="welcome-box">
+            <h1>
+                آماده هستی تا بتوانی ایمیل من را ببینی؟🤩
+                <br><br>
+                اگه اره پس کلیک کن بر روی دکمه‌ی زیر🤪
+            </h1>
+
+            <button class="main-btn" id="startBtn">
+                بزن بریممم🫡
+            </button>
+        </div>
+    </section>
+
+    <!-- PAGE 2 -->
+    <section class="page hidden" id="gmailPage">
+        <div class="card">
+
+            <div class="title">📧 Gmail شما :</div>
+
+            <div class="display-box">
+                <div class="email-value">
+                    fariborz.rahimi.g1392@gmail.com
+                </div>
+
+                <div class="actions">
+                    <button class="icon-btn" id="copyBtn" title="کپی">
+                        📋
+                    </button>
+                </div>
+            </div>
+
+            <div class="title">🔒 رمز ورود ایمیل شما :</div>
+
+            <div class="display-box">
+
+                <div class="password-content" id="passwordText">
+                    ••••••••••••••••
+                </div>
+
+                <div class="actions">
+                    <button class="icon-btn" id="eyeBtn" title="نمایش">
+                        🙈
+                    </button>
+                </div>
+
+            </div>
+
+            <div class="joke-message" id="jokeMessage">
+                میخوای رمز من رو ببینی؟😏 فک کردی به این فکر نکردم؟😂😂 رمزمو میخوای چیکار شیطون
+            </div>
+
+        </div>
+    </section>
+
+    <footer class="footer">
+        این سایت توسط <span class="fari">fari</span> ساخته شده است😊
+    </footer>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal">
+
+    <div class="modal">
+
+        <h3>آماده‌ای تا رمز من رو ببینی؟</h3>
+
+        <div class="modal-buttons">
+
+            <button class="yes-btn" id="yesBtn">
+                اره آماده ام
+            </button>
+
+            <button class="no-btn" id="noBtn">
+                نه نمیخوام ببینم
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+const startBtn = document.getElementById("startBtn");
+const welcomePage = document.getElementById("welcomePage");
+const gmailPage = document.getElementById("gmailPage");
+
+const copyBtn = document.getElementById("copyBtn");
+
+const eyeBtn = document.getElementById("eyeBtn");
+const modal = document.getElementById("modal");
+
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+
+const jokeMessage = document.getElementById("jokeMessage");
+const passwordText = document.getElementById("passwordText");
+
+let jokeVisible = false;
+
+startBtn.addEventListener("click",()=>{
+
+    welcomePage.style.opacity="0";
+    welcomePage.style.transform="scale(.95)";
+
+    setTimeout(()=>{
+        welcomePage.classList.add("hidden");
+        gmailPage.classList.remove("hidden");
+    },600);
+
+});
+
+copyBtn.addEventListener("click", async ()=>{
+
+    try{
+
+        await navigator.clipboard.writeText(
+            "fariborz.rahimi.g1392@gmail.com"
+        );
+
+        const toast=document.createElement("div");
+        toast.className="copied";
+        toast.innerText="✅ ایمیل کپی شد";
+        document.body.appendChild(toast);
+
+        setTimeout(()=>{
+            toast.remove();
+        },2000);
+
+    }catch{
+        alert("کپی انجام نشد.");
+    }
+
+});
+
+eyeBtn.addEventListener("click",()=>{
+
+    if(jokeVisible){
+
+        jokeVisible=false;
+        jokeMessage.classList.remove("show-joke");
+        passwordText.textContent="••••••••••••••••";
+        eyeBtn.textContent="🙈";
+
+    }else{
+
+        modal.classList.add("active");
+
+    }
+
+});
+
+yesBtn.addEventListener("click",()=>{
+
+    modal.classList.remove("active");
+
+    jokeVisible=true;
+
+    passwordText.textContent="😂 رمز واقعی وجود ندارد";
+
+    jokeMessage.classList.remove("show-joke");
+
+    setTimeout(()=>{
+        jokeMessage.classList.add("show-joke");
+    },50);
+
+    eyeBtn.textContent="👁️";
+
+});
+
+noBtn.addEventListener("click",()=>{
+
+    modal.classList.remove("active");
+
+    jokeVisible=false;
+
+    passwordText.textContent="••••••••••••••••";
+
+    jokeMessage.classList.remove("show-joke");
+
+    eyeBtn.textContent="🙈";
+
+});
+
+modal.addEventListener("click",(e)=>{
+    if(e.target===modal){
+        modal.classList.remove("active");
+    }
+});
+
+</script>
+
+</body>
+</html>

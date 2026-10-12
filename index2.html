@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#05010d" />
+<title>fari Gmail</title>
+<style>
+  /* ============================================================
+     RESET & ROOT VARIABLES
+     ============================================================ */
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  :root {
+    --purple: #a855f7;
+    --purple-deep: #7c3aed;
+    --purple-soft: #c4b5fd;
+    --pink: #d946ef;
+    --cyan: #22d3ee;
+    --green: #22c55e;
+    --red: #ef4444;
+    --text: #f3e8ff;
+    --muted: #a78bfa;
+    --bg: #05010d;
+    --radius: 26px;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    font-family: "Vazirmatn", "Vazir", "IRANSansX", "IRANSans", "Segoe UI",
+      Tahoma, system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+    position: relative;
+    line-height: 1.9;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body.no-scroll {
+    overflow: hidden;
+  }
+
+  /* ============================================================
+     BACKGROUND LAYERS
+     ============================================================ */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -3;
+    background:
+      radial-gradient(circle at 15% 8%, rgba(124, 58, 237, 0.38), transparent 46%),
+      radial-gradient(circle at 88% 88%, rgba(192, 38, 211, 0.26), transparent 46%),
+      radial-gradient(circle at 50% 50%, rgba(30, 10, 60, 0.55), transparent 72%),
+      #05010d;
+  }
+
+  .bg {
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .grid-bg {
+    position: absolute;
+    inset: -10%;
+    background-image:
+      linear-gradient(rgba(168, 85, 247, 0.09) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(168, 85, 247, 0.09) 1px, transparent 1px);
+    background-size: 52px 52px;
+    animation: gridShift 22s linear infinite;
+    -webkit-mask-image: radial-gradient(circle at 50% 42%, #000 0%, transparent 76%);
+    mask-image: radial-gradient(circle at 50% 42%, #000 0%, transparent 76%);
+  }
+
+  @keyframes gridShift {
+    from {
+      background-position: 0 0;
+    }
+    to {
+      background-position: 52px 52px;
+    }
+  }
+
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(90px);
+    opacity: 0.6;
+    will-change: transform;
+  }
+
+  .orb-1 {
+    width: 420px;
+    height: 420px;
+    background: radial-gradient(circle, #7c3aed, transparent 70%);
+    top: -130px;
+    right: -110px;
+    animation: float1 15s ease-in-out infinite;
+  }
+
+  .orb-2 {
+    width: 380px;
+    height: 380px;
+    background: radial-gradient(circle, #c026d3, transparent 70%);
+    bottom: -140px;
+    left: -100px;
+    animation: float2 18s ease-in-out infinite;
+  }
+
+  .orb-3 {
+    width: 320px;
+    height: 320px;
+    background: radial-gradient(circle, #4c1d95, transparent 70%);
+    top: 42%;
+    left: 38%;
+    animation: float3 20s ease-in-out infinite;
+  }
+
+  @keyframes float1 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(-40px, 45px) scale(1.12); }
+  }
+
+  @keyframes float2 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(50px, -40px) scale(1.1); }
+  }
+
+  @keyframes float3 {
+    0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.45; }
+    50% { transform: translate(-60px, -50px) scale(1.18); opacity: 0.7; }
+  }
+
+  .scanline {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(168, 85, 247, 0.6), transparent);
+    box-shadow: 0 0 24px rgba(168, 85, 247, 0.85);
+    animation: scan 8s linear infinite;
+    opacity: 0.45;
+  }
+
+  @keyframes scan {
+    0% { top: -3%; }
+    100% { top: 103%; }
+  }
+
+  /* ============================================================
+     TOP BAR
+     ============================================================ */
+  .topbar {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 18px clamp(16px, 4vw, 40px);
+  }
+
+  .logo {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    font-weight: 800;
+    font-size: clamp(16px, 4.2vw, 21px);
+    letter-spacing: 0.5px;
+  }
+
+  .logo-mark {
+    font-family: Georgia, "Times New Roman", serif;
+    font-style: italic;
+    font-size: 1.18em;
+    background: linear-gradient(135deg, #f3e8ff, #a855f7 45%, #22d3ee);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 0 12px rgba(168, 85, 247, 0.75));
+  }
+
+  .logo-text {
+    color: var(--purple-soft);
+    font-weight: 600;
+  }
+
+  .status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: clamp(9.5px, 2.6vw, 12px);
+    color: var(--muted);
+    direction: ltr;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 12px var(--green);
+    animation: blink 1.8s ease-in-out infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.25; transform: scale(0.8); }
+  }
+
+  /* ============================================================
+     STAGE & SCREENS
+     ============================================================ */
+  .stage {
+    position: relative;
+    z-index: 2;
+    flex: 1;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(10px, 3vw, 30px) clamp(14px, 4vw, 26px);
+  }
+
+  .screen {
+    display: none;
+    width: 100%;
+    max-width: 620px;
+    margin: 0 auto;
+  }
+
+  .screen.active {
+    display: block;
+    animation: screenIn 0.8s cubic-bezier(0.2, 0.85, 0.25, 1) both;
+  }
+
+  .screen.leaving {
+    display: block;
+    animation: screenOut 0.58s cubic-bezier(0.55, 0, 0.75, 0) both;
+    pointer-events: none;
+  }
+
+  @keyframes screenIn {
+    from {
+      opacity: 0;
+      transform: translateY(45px) scale(0.95);
+      filter: blur(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: blur(0);
+    }
+  }
+
+  @keyframes screenOut {
+    from {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: blur(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-45px) scale(0.95);
+      filter: blur(10px);
+    }
+  }
+
+  /* ============================================================
+     SCREEN 1 — WELCOME
+     ============================================================ */
+  .welcome-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: clamp(16px, 3.4vw, 26px);
+    padding: clamp(14px, 4vw, 34px) 0;
+  }
+
+  .badge {
+    display: inline-block;
+    font-size: clamp(11px, 3vw, 13.5px);
+    font-weight: 600;
+    color: #d8b4fe;
+    padding: 9px 18px;
+    border-radius: 999px;
+    border: 1px solid rgba(168, 85, 247, 0.42);
+    background: rgba(168, 85, 247, 0.09);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 0 24px rgba(168, 85, 247, 0.22), inset 0 0 20px rgba(168, 85, 247, 0.12);
+    animation: floatY 4.5s ease-in-out infinite;
+  }
+
+  @keyframes floatY {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-7px); }
+  }
+
+  .welcome-title {
+    margin: 0;
+    font-size: clamp(21px, 6.2vw, 40px);
+    font-weight: 800;
+    line-height: 1.75;
+    background: linear-gradient(135deg, #ffffff 8%, #e9d5ff 34%, #a855f7 66%, #22d3ee 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: titleGlow 4.5s ease-in-out infinite;
+  }
+
+  @keyframes titleGlow {
+    0%, 100% { filter: drop-shadow(0 0 16px rgba(168, 85, 247, 0.45)); }
+    50% { filter: drop-shadow(0 0 36px rgba(168, 85, 247, 0.9)); }
+  }
+
+  .welcome-sub {
+    margin: 0;
+    font-size: clamp(15px, 4.3vw, 20px);
+    color: #cdb8f0;
+    font-weight: 500;
+  }
+
+  /* ============================================================
+     BUTTONS
+     ============================================================ */
+  .btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 0;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 800;
+    font-size: clamp(14px, 4vw, 16.5px);
+    line-height: 1.6;
+    padding: 14px 26px;
+    border-radius: 999px;
+    color: #fff;
+    overflow: hidden;
+    isolation: isolate;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1.4),
+      box-shadow 0.3s ease, filter 0.3s ease;
+  }
+
+  .btn::after {
+    content: "";
+    position: absolute;
+    top: -10%;
+    bottom: -10%;
+    width: 45%;
+    left: -70%;
+    background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+    transform: skewX(-18deg);
+    animation: shine 3.6s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  @keyframes shine {
+    0% { left: -70%; }
+    45% { left: 135%; }
+    100% { left: 135%; }
+  }
+
+  .btn:active {
+    transform: scale(0.95);
+  }
+
+  .btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .btn-primary {
+    padding: 17px 42px;
+    font-size: clamp(16px, 4.6vw, 20px);
+    background: linear-gradient(135deg, #6d28d9, #a855f7 45%, #d946ef);
+    animation: pulsePurple 2.8s ease-in-out infinite;
+  }
+
+  @keyframes pulsePurple {
+    0%, 100% {
+      box-shadow: 0 0 18px rgba(168, 85, 247, 0.6), 0 0 52px rgba(168, 85, 247, 0.32),
+        inset 0 1px 0 rgba(255, 255, 255, 0.32);
+    }
+    50% {
+      box-shadow: 0 0 34px rgba(217, 70, 239, 0.95), 0 0 95px rgba(168, 85, 247, 0.6),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    }
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-3px) scale(1.03);
+  }
+
+  .btn-green {
+    background: linear-gradient(135deg, #15803d, #22c55e 55%, #4ade80);
+    animation: pulseGreen 2.8s ease-in-out infinite;
+  }
+
+  @keyframes pulseGreen {
+    0%, 100% {
+      box-shadow: 0 0 16px rgba(34, 197, 94, 0.55), 0 0 42px rgba(34, 197, 94, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.28);
+    }
+    50% {
+      box-shadow: 0 0 30px rgba(34, 197, 94, 0.95), 0 0 75px rgba(34, 197, 94, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.45);
+    }
+  }
+
+  .btn-green:hover {
+    transform: translateY(-3px) scale(1.04);
+  }
+
+  .btn-red {
+    background: linear-gradient(135deg, #b91c1c, #ef4444 55%, #f87171);
+    animation: pulseRed 2.8s ease-in-out infinite;
+  }
+
+  @keyframes pulseRed {
+    0%, 100% {
+      box-shadow: 0 0 16px rgba(239, 68, 68, 0.55), 0 0 42px rgba(239, 68, 68, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.28);
+    }
+    50% {
+      box-shadow: 0 0 30px rgba(239, 68, 68, 0.95), 0 0 75px rgba(239, 68, 68, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.45);
+    }
+  }
+
+  .btn-red:hover {
+    transform: translateY(-3px) scale(1.04);
+  }
+
+  /* ============================================================
+     SCREEN 2 — GLASS CARD
+     ============================================================ */
+  .card {
+    position: relative;
+    width: 100%;
+    max-width: 620px;
+    margin: 0 auto;
+    padding: clamp(18px, 4.4vw, 30px);
+    border-radius: var(--radius);
+    background: linear-gradient(160deg, rgba(42, 16, 78, 0.72), rgba(12, 4, 28, 0.85));
+    border: 1px solid rgba(168, 85, 247, 0.28);
+    backdrop-filter: blur(20px) saturate(140%);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.6), 0 0 55px rgba(124, 58, 237, 0.25),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08), inset 0 0 60px rgba(124, 58, 237, 0.08);
+    overflow: hidden;
+  }
+
+  #screen-main.active .card {
+    animation: cardIn 0.95s cubic-bezier(0.2, 0.9, 0.25, 1.05) both,
+      cardGlow 5.5s ease-in-out infinite 1s;
+  }
+
+  @keyframes cardIn {
+    0% {
+      opacity: 0;
+      transform: translateY(50px) scale(0.93) rotateX(8deg);
+      filter: blur(12px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1) rotateX(0);
+      filter: blur(0);
+    }
+  }
+
+  @keyframes cardGlow {
+    0%, 100% {
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.6), 0 0 45px rgba(124, 58, 237, 0.26),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08), inset 0 0 60px rgba(124, 58, 237, 0.08);
+    }
+    50% {
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.6), 0 0 90px rgba(168, 85, 247, 0.48),
+        inset 0 1px 0 rgba(255, 255, 255, 0.14), inset 0 0 70px rgba(168, 85, 247, 0.14);
+    }
+  }
+
+  .card-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 14px;
+    margin-bottom: 20px;
+    border-bottom: 1px dashed rgba(168, 85, 247, 0.28);
+  }
+
+  .dots {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .d {
+    display: block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  .d.r { background: #ff5f57; box-shadow: 0 0 10px rgba(255, 95, 87, 0.85); }
+  .d.y { background: #febc2e; box-shadow: 0 0 10px rgba(254, 188, 46, 0.85); }
+  .d.g { background: #28c840; box-shadow: 0 0 10px rgba(40, 200, 64, 0.85); }
+
+  .card-title {
+    margin-inline-start: auto;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: clamp(10px, 2.9vw, 12.5px);
+    letter-spacing: 0.8px;
+    color: var(--muted);
+    direction: ltr;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .field {
+    margin: 0;
+  }
+
+  .label {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin: 0 0 12px;
+    font-size: clamp(14px, 3.9vw, 17px);
+    font-weight: 700;
+    color: #e9d5ff;
+  }
+
+  .label::before {
+    content: "";
+    display: inline-block;
+    width: 5px;
+    height: 19px;
+    border-radius: 99px;
+    background: linear-gradient(180deg, #a855f7, #22d3ee);
+    box-shadow: 0 0 14px rgba(168, 85, 247, 0.95);
+    flex-shrink: 0;
+  }
+
+  .divider {
+    height: 1px;
+    margin: 22px 0;
+    background: linear-gradient(90deg, transparent, rgba(168, 85, 247, 0.5), transparent);
+  }
+
+  /* ---- display boxes ---- */
+  .display-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    direction: ltr;
+    padding: 13px clamp(12px, 3.4vw, 16px);
+    border-radius: 16px;
+    background: rgba(8, 2, 20, 0.75);
+    border: 1px solid rgba(168, 85, 247, 0.32);
+    box-shadow: inset 0 0 26px rgba(124, 58, 237, 0.18), 0 0 20px rgba(124, 58, 237, 0.1);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .display-box:hover {
+    border-color: rgba(192, 132, 252, 0.68);
+    box-shadow: inset 0 0 30px rgba(124, 58, 237, 0.3), 0 0 34px rgba(168, 85, 247, 0.3);
+  }
+
+  .ico {
+    flex-shrink: 0;
+    font-size: clamp(15px, 4vw, 18px);
+    filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.85));
+    transition: transform 0.3s ease;
+  }
+
+  .value {
+    flex: 1;
+    min-width: 0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Courier New", monospace;
+    font-size: clamp(12.5px, 3.5vw, 15.5px);
+    letter-spacing: 0.3px;
+    color: #f5ecff;
+    text-align: left;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    user-select: text;
+  }
+
+  .pass-value {
+    font-size: clamp(15px, 4.4vw, 18px);
+    letter-spacing: 3px;
+    color: #d8b4fe;
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+  }
+
+  .pass-value.revealed {
+    letter-spacing: 2px;
+    color: #f0abfc;
+    text-shadow: 0 0 16px rgba(217, 70, 239, 0.95);
+    animation: popIn 0.55s cubic-bezier(0.2, 0.9, 0.3, 1.5) both;
+  }
+
+  @keyframes popIn {
+    0% { transform: scale(0.6); opacity: 0; }
+    60% { transform: scale(1.14); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  /* ---- icon buttons ---- */
+  .icon-btn {
+    flex-shrink: 0;
+    width: clamp(38px, 10.5vw, 44px);
+    height: clamp(38px, 10.5vw, 44px);
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+    cursor: pointer;
+    color: #e9d5ff;
+    border: 1px solid rgba(168, 85, 247, 0.42);
+    background: linear-gradient(150deg, rgba(168, 85, 247, 0.24), rgba(124, 58, 237, 0.1));
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1.4), box-shadow 0.3s ease,
+      color 0.3s ease, background 0.3s ease, border-color 0.3s ease;
+  }
+
+  .icon-btn svg {
+    width: 54%;
+    height: 54%;
+    display: block;
+  }
+
+  .icon-btn:hover {
+    transform: translateY(-2px) scale(1.07);
+    color: #ffffff;
+    box-shadow: 0 0 22px rgba(168, 85, 247, 0.7);
+  }
+
+  .icon-btn:active {
+    transform: scale(0.93);
+  }
+
+  .copy-btn.copied {
+    color: #86efac;
+    border-color: rgba(34, 197, 94, 0.75);
+    box-shadow: 0 0 24px rgba(34, 197, 94, 0.8);
+  }
+
+  .eye-btn .eye-on {
+    display: none;
+  }
+
+  .eye-btn.is-open .eye-on {
+    display: block;
+  }
+
+  .eye-btn.is-open .eye-off {
+    display: none;
+  }
+
+  .eye-btn.is-open {
+    color: #f0abfc;
+    border-color: rgba(217, 70, 239, 0.8);
+    box-shadow: 0 0 26px rgba(217, 70, 239, 0.8);
+  }
+
+  /* ---- joke message ---- */
+  .joke {
+    display: none;
+    margin-top: 16px;
+    padding: 16px 18px;
+    border-radius: 18px;
+    text-align: center;
+    font-size: clamp(14px, 3.9vw, 17px);
+    font-weight: 600;
+    line-height: 2.1;
+    color: #f7ecff;
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(236, 72, 153, 0.14));
+    border: 1px solid rgba(192, 132, 252, 0.45);
+    box-shadow: 0 0 32px rgba(168, 85, 247, 0.28), inset 0 0 26px rgba(168, 85, 247, 0.12);
+  }
+
+  .joke.show {
+    display: block;
+    animation: bounceIn 0.95s cubic-bezier(0.2, 0.9, 0.3, 1.45) both,
+      jokeGlow 2.6s ease-in-out infinite 1s;
+  }
+
+  @keyframes bounceIn {
+    0% {
+      opacity: 0;
+      transform: scale(0.68) translateY(26px);
+    }
+    55% {
+      opacity: 1;
+      transform: scale(1.07) translateY(-8px);
+    }
+    76% {
+      transform: scale(0.97) translateY(0);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  @keyframes jokeGlow {
+    0%, 100% { box-shadow: 0 0 26px rgba(168, 85, 247, 0.24), inset 0 0 22px rgba(168, 85, 247, 0.1); }
+    50% { box-shadow: 0 0 48px rgba(217, 70, 239, 0.55), inset 0 0 30px rgba(168, 85, 247, 0.2); }
+  }
+
+  /* ============================================================
+     MODAL OVERLAY — CONFIRMATION PANEL
+     ============================================================ */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(5, 1, 13, 0.74);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.35s ease, visibility 0.35s ease;
+  }
+
+  .overlay.open {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .modal {
+    width: 100%;
+    max-width: 470px;
+    padding: clamp(22px, 5vw, 34px) clamp(18px, 4.6vw, 30px);
+    border-radius: var(--radius);
+    text-align: center;
+    background: linear-gradient(160deg, rgba(46, 18, 88, 0.94), rgba(12, 4, 28, 0.96));
+    border: 1px solid rgba(168, 85, 247, 0.42);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7), 0 0 70px rgba(124, 58, 237, 0.42),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transform: scale(0.82) translateY(26px);
+    opacity: 0;
+    transition: transform 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.35), opacity 0.35s ease;
+  }
+
+  .overlay.open .modal {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+
+  .modal-ico {
+    font-size: clamp(30px, 9vw, 44px);
+    margin-bottom: 12px;
+    filter: drop-shadow(0 0 22px rgba(168, 85, 247, 0.95));
+    animation: floatY 3s ease-in-out infinite;
+  }
+
+  .modal-title {
+    margin: 0 0 24px;
+    font-size: clamp(17px, 4.8vw, 23px);
+    font-weight: 800;
+    line-height: 1.95;
+    background: linear-gradient(135deg, #ffffff, #e9d5ff 45%, #c084fc);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 0 16px rgba(168, 85, 247, 0.65));
+  }
+
+  .modal-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .modal-actions .btn {
+    flex: 1 1 155px;
+    min-width: 138px;
+  }
+
+  /* ============================================================
+     TOAST
+     ============================================================ */
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: calc(26px + env(safe-area-inset-bottom));
+    z-index: 90;
+    padding: 12px 24px;
+    border-radius: 999px;
+    white-space: nowrap;
+    font-size: clamp(13px, 3.6vw, 15px);
+    font-weight: 700;
+    color: #e9d5ff;
+    background: rgba(20, 8, 42, 0.94);
+    border: 1px solid rgba(168, 85, 247, 0.55);
+    box-shadow: 0 0 34px rgba(168, 85, 247, 0.55);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translate(-50%, 26px);
+    transition: opacity 0.3s ease, transform 0.38s cubic-bezier(0.2, 0.9, 0.3, 1.4),
+      visibility 0.3s ease;
+  }
+
+  .toast.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, 0);
+  }
+
+  /* ============================================================
+     FOOTER / SIGNATURE
+     ============================================================ */
+  .footer {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 18px 18px calc(18px + env(safe-area-inset-bottom));
+    font-size: clamp(12.5px, 3.6vw, 15px);
+    color: #9d86c4;
+    font-weight: 500;
+  }
+
+  .signature {
+    display: inline-block;
+    font-family: Georgia, "Times New Roman", serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 1.25em;
+    letter-spacing: 0.6px;
+    padding: 0 5px;
+    background: linear-gradient(135deg, #f5d0fe, #a855f7 45%, #22d3ee);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 0 10px rgba(168, 85, 247, 0.9));
+    transition: filter 0.35s ease, transform 0.35s ease;
+  }
+
+  .signature:hover {
+    filter: drop-shadow(0 0 20px rgba(217, 70, 239, 1));
+    transform: scale(1.08) rotate(-2deg);
+  }
+
+  /* ============================================================
+     RESPONSIVE
+     ============================================================ */
+  @media (max-width: 520px) {
+    .card-head {
+      margin-bottom: 16px;
+    }
+
+    .modal-actions {
+      flex-direction: column;
+    }
+
+    .modal-actions .btn {
+      width: 100%;
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .display-box {
+      gap: 8px;
+    }
+  }
+
+  @media (max-width: 380px) {
+    .card-title {
+      display: none;
+    }
+
+    .status span:last-child {
+      display: none;
+    }
+
+    .btn-primary {
+      padding: 15px 30px;
+    }
+  }
+
+  @media (min-width: 900px) {
+    .orb {
+      filter: blur(110px);
+    }
+  }
+
+  /* ============================================================
+     REDUCED MOTION
+     ============================================================ */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.08ms !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ================= BACKGROUND ================= -->
+  <div class="bg" aria-hidden="true">
+    <div class="grid-bg"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="scanline"></div>
+  </div>
+
+  <!-- ================= TOP BAR ================= -->
+  <header class="topbar">
+    <div class="logo">
+      <span class="logo-mark">fari</span>
+      <span class="logo-text">Gmail</span>
+    </div>
+    <div class="status">
+      <span class="status-dot"></span>
+      <span>secure connection</span>
+    </div>
+  </header>
+
+  <!-- ================= STAGE ================= -->
+  <main class="stage">
+
+    <!-- ---------- SCREEN 1 : WELCOME ---------- -->
+    <section class="screen active" id="screen-welcome">
+      <div class="welcome-wrap">
+        <div class="badge">🔒 fari Gmail — دسترسی امن</div>
+
+        <h1 class="welcome-title">آماده هستی تا بتوانی ایمیل من را ببینی؟🤩</h1>
+
+        <p class="welcome-sub">اگه اره پس کلیک کن بر روی دکمه‌ی زیر🤪</p>
+
+        <button class="btn btn-primary" id="startBtn" type="button">بزن بریممم🫡</button>
+      </div>
+    </section>
+
+    <!-- ---------- SCREEN 2 : EMAIL & PASSWORD ---------- -->
+    <section class="screen" id="screen-main">
+      <div class="card">
+
+        <div class="card-head">
+          <span class="dots">
+            <i class="d r"></i>
+            <i class="d y"></i>
+            <i class="d g"></i>
+          </span>
+          <span class="card-title">fari Gmail — secure vault</span>
+        </div>
+
+        <!-- Email -->
+        <div class="field">
+          <h2 class="label">Gmail شما :</h2>
+          <div class="display-box email-box">
+            <span class="ico" aria-hidden="true">✉️</span>
+            <span class="value email-value" id="emailValue">fariborz.rahimi.g1392@gmail.com</span>
+            <button class="icon-btn copy-btn" id="copyBtn" type="button" aria-label="کپی ایمیل" title="کپی ایمیل">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="9" y="9" width="12" height="12" rx="2.5"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Password -->
+        <div class="field">
+          <h2 class="label">رمز ورود ایمیل شما :</h2>
+          <div class="display-box pass-box">
+            <span class="ico" id="passIco" aria-hidden="true">🔒</span>
+            <span class="value pass-value" id="passValue">••••••••••</span>
+            <button class="icon-btn eye-btn" id="eyeBtn" type="button"
+                    aria-label="نمایش رمز" title="نمایش رمز">
+              <!-- eye off -->
+              <svg class="eye eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"></path>
+                <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"></path>
+                <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"></path>
+                <line x1="1" y1="1" x2="23" y2="23"></line>
+              </svg>
+              <!-- eye on -->
+              <svg class="eye eye-on" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+            </button>
+          </div>
+
+          <div class="joke" id="jokeMsg" role="status" aria-live="polite">
+            میخوای رمز من رو ببینی؟😏 فک کردی به این فکر نکردم؟😂😂 رمزمو میخوای چیکار شیطون
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================= CONFIRM MODAL ================= -->
+  <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <div class="modal-ico" aria-hidden="true">🔐</div>
+      <h3 class="modal-title" id="modalTitle">آماده‌ای تا رمز من رو ببینی؟</h3>
+      <div class="modal-actions">
+        <button class="btn btn-green" id="yesBtn" type="button">اره آماده ام</button>
+        <button class="btn btn-red" id="noBtn" type="button">نه نمیخوام ببینم</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= TOAST ================= -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="footer">
+    <p>این سایت توسط <span class="signature">fari</span> ساخته شده است😊</p>
+  </footer>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ------------------------------------------------------------
+     ELEMENTS
+     ------------------------------------------------------------ */
+  var screenWelcome = document.getElementById("screen-welcome");
+  var screenMain    = document.getElementById("screen-main");
+  var startBtn      = document.getElementById("startBtn");
+  var copyBtn       = document.getElementById("copyBtn");
+  var eyeBtn        = document.getElementById("eyeBtn");
+  var passValue     = document.getElementById("passValue");
+  var passIco       = document.getElementById("passIco");
+  var jokeMsg       = document.getElementById("jokeMsg");
+  var overlay       = document.getElementById("overlay");
+  var yesBtn        = document.getElementById("yesBtn");
+  var noBtn         = document.getElementById("noBtn");
+  var toastEl       = document.getElementById("toast");
+
+  /* ------------------------------------------------------------
+     CONSTANTS
+     ------------------------------------------------------------ */
+  var EMAIL_TEXT   = "fariborz.rahimi.g1392@gmail.com";
+  var MASK_TEXT    = "••••••••••";
+  var REVEAL_TEXT  = "😂😂😂😂😂";
+
+  var isRevealed   = false;
+  var isOverlayOpen = false;
+  var toastTimer   = null;
+
+  /* ------------------------------------------------------------
+     TOAST
+     ------------------------------------------------------------ */
+  function showToast(message) {
+    toastEl.textContent = message;
+    toastEl.classList.add("show");
+    if (toastTimer) {
+      clearTimeout(toastTimer);
+    }
+    toastTimer = setTimeout(function () {
+      toastEl.classList.remove("show");
+    }, 2200);
+  }
+
+  /* ------------------------------------------------------------
+     SCREEN SWITCHING
+     ------------------------------------------------------------ */
+  function goToMainScreen() {
+    startBtn.disabled = true;
+    screenWelcome.classList.add("leaving");
+
+    setTimeout(function () {
+      screenWelcome.classList.remove("active", "leaving");
+      screenMain.classList.add("active");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }, 560);
+  }
+
+  startBtn.addEventListener("click", goToMainScreen);
+
+  /* ------------------------------------------------------------
+     COPY EMAIL
+     ------------------------------------------------------------ */
+  function fallbackCopy(text) {
+    var area = document.createElement("textarea");
+    area.value = text;
+    area.setAttribute("readonly", "");
+    area.style.position = "fixed";
+    area.style.top = "-1000px";
+    area.style.opacity = "0";
+    document.body.appendChild(area);
+    area.select();
+    area.setSelectionRange(0, area.value.length);
+    var ok = false;
+    try {
+      ok = document.execCommand("copy");
+    } catch (e) {
+      ok = false;
+    }
+    document.body.removeChild(area);
+    return ok;
+  }
+
+  function copyEmail() {
+    var done = function () {
+      copyBtn.classList.add("copied");
+      showToast("ایمیل کپی شد ✅");
+      setTimeout(function () {
+        copyBtn.classList.remove("copied");
+      }, 1300);
+    };
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(EMAIL_TEXT).then(done).catch(function () {
+        if (fallbackCopy(EMAIL_TEXT)) {
+          done();
+        } else {
+          showToast("کپی نشد، دستی بردار 😅");
+        }
+      });
+    } else {
+      if (fallbackCopy(EMAIL_TEXT)) {
+        done();
+      } else {
+        showToast("کپی نشد، دستی بردار 😅");
+      }
+    }
+  }
+
+  copyBtn.addEventListener("click", copyEmail);
+
+  /* ------------------------------------------------------------
+     CONFIRM MODAL
+     ------------------------------------------------------------ */
+  function openOverlay() {
+    if (isOverlayOpen) {
+      return;
+    }
+    isOverlayOpen = true;
+    overlay.classList.add("open");
+    document.body.classList.add("no-scroll");
+    setTimeout(function () {
+      yesBtn.focus();
+    }, 320);
+  }
+
+  function closeOverlay() {
+    if (!isOverlayOpen) {
+      return;
+    }
+    isOverlayOpen = false;
+    overlay.classList.remove("open");
+    document.body.classList.remove("no-scroll");
+  }
+
+  /* ------------------------------------------------------------
+     PASSWORD REVEAL / HIDE
+     ------------------------------------------------------------ */
+  function revealJoke() {
+    isRevealed = true;
+    passValue.textContent = REVEAL_TEXT;
+    passValue.classList.add("revealed");
+    passIco.textContent = "🔓";
+    eyeBtn.classList.add("is-open");
+    eyeBtn.setAttribute("aria-label", "مخفی کردن رمز");
+    eyeBtn.setAttribute("title", "مخفی کردن رمز");
+
+    jokeMsg.classList.remove("show");
+    /* force reflow so the animation restarts every time */
+    void jokeMsg.offsetWidth;
+    jokeMsg.classList.add("show");
+  }
+
+  function hideJoke() {
+    isRevealed = false;
+    passValue.textContent = MASK_TEXT;
+    passValue.classList.remove("revealed");
+    passIco.textContent = "🔒";
+    eyeBtn.classList.remove("is-open");
+    eyeBtn.setAttribute("aria-label", "نمایش رمز");
+    eyeBtn.setAttribute("title", "نمایش رمز");
+    jokeMsg.classList.remove("show");
+  }
+
+  /* ------------------------------------------------------------
+     EVENT LISTENERS
+     ------------------------------------------------------------ */
+  eyeBtn.addEventListener("click", function () {
+    if (isRevealed) {
+      hideJoke();
+      return;
+    }
+    openOverlay();
+  });
+
+  yesBtn.addEventListener("click", function () {
+    closeOverlay();
+    setTimeout(function () {
+      revealJoke();
+      eyeBtn.focus();
+    }, 260);
+  });
+
+  noBtn.addEventListener("click", function () {
+    closeOverlay();
+    setTimeout(function () {
+      eyeBtn.focus();
+    }, 260);
+  });
+
+  /* close on backdrop click */
+  overlay.addEventListener("click", function (event) {
+    if (event.target === overlay) {
+      closeOverlay();
+    }
+  });
+
+  /* close on Escape */
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape" || event.key === "Esc") {
+      closeOverlay();
+    }
+  });
+
+  /* ------------------------------------------------------------
+     PREVENT IMAGE/EMAIL DRAG SELECTION ISSUES (keeps it tidy)
+     ------------------------------------------------------------ */
+  document.addEventListener("dragstart", function (event) {
+    if (event.target && event.target.classList &&
+        (event.target.classList.contains("value") ||
+         event.target.classList.contains("label"))) {
+      event.preventDefault();
+    }
+  });
+
+})();
+</script>
+</body>
+</html>
